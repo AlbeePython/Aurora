@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRAFTX STORE | Привилегии</title>
+    <title>CRAFTX/title>
     <script src="https://cloudflare.com"></script>
     <link href="https://googleapis.com" rel="stylesheet">
     <style>
@@ -23,17 +23,50 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 20px;
+            padding: 20px;
         }
 
-        h1 { font-weight: 800; margin-bottom: 40px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; }
+        /* Навигация */
+        nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 40px;
+            background: var(--card);
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.05);
+            position: sticky;
+            top: 20px;
+            z-index: 100;
+        }
 
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.3s;
+            border-radius: 25px;
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        /* Контентные секции */
+        .page-section { display: none; width: 100%; max-width: 1100px; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: block; }
+
+        h1 { font-weight: 800; margin-bottom: 40px; color: var(--accent); text-transform: uppercase; letter-spacing: 2px; text-align: center; }
+
+        /* Донаты (Сетка) */
         .grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
-            width: 100%;
-            max-width: 1100px;
         }
 
         .card {
@@ -43,133 +76,155 @@
             border: 1px solid rgba(255,255,255,0.05);
             text-align: center;
             transition: 0.3s;
-            animation: fadeIn 0.5s ease forwards;
         }
 
         .card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .card h3 { margin: 0 0 10px 0; font-size: 1.6rem; letter-spacing: 1px; }
         .price { color: var(--accent); font-weight: 600; font-size: 1.1rem; margin-bottom: 20px; display: block; }
 
         .buy-btn {
-            background: var(--accent);
-            color: var(--bg);
-            border: none;
-            padding: 14px;
-            width: 100%;
-            border-radius: 10px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.2s;
-            text-transform: uppercase;
+            background: var(--accent); color: var(--bg); border: none; padding: 14px;
+            width: 100%; border-radius: 10px; font-weight: 800; cursor: pointer; text-transform: uppercase;
         }
 
-        .buy-btn:hover { opacity: 0.9; transform: scale(1.02); }
-
-        /* Модальное окно */
-        .modal-overlay {
-            position: fixed; inset: 0;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal {
+        /* Стили раздела Информация */
+        .info-container {
             background: var(--card);
-            width: 95%;
-            max-width: 750px;
+            padding: 40px;
             border-radius: var(--radius);
-            display: flex;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
+            line-height: 1.6;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .info-container h2 { color: var(--accent); margin-top: 0; }
+        .info-container ul { padding-left: 20px; color: #cbd5e1; }
+        .info-container li { margin-bottom: 10px; }
+
+        /* Личный кабинет */
+        .dev-box {
+            text-align: center;
+            padding: 100px 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: var(--radius);
+            border: 2px dashed #334155;
         }
 
+        /* Модалка (из прошлого кода) */
+        .modal-overlay {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal { background: var(--card); width: 95%; max-width: 800px; border-radius: var(--radius); display: flex; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
         .side-pay { flex: 1; background: rgba(0,0,0,0.2); padding: 30px; border-right: 1px solid rgba(255,255,255,0.05); }
-        .side-info { flex: 1.4; padding: 30px; }
-
-        .pay-item { padding: 15px; border: 1px solid var(--accent); border-radius: 10px; color: var(--accent); text-align: center; font-weight: 600; }
-        .pay-bad { opacity: 0.4; margin-top: 10px; border: 1px solid #444; padding: 10px; border-radius: 10px; font-size: 0.9rem; }
-
-        input[type="email"] {
-            width: 100%; background: #0f172a; border: 1px solid #334155;
-            padding: 12px; border-radius: 8px; color: white; margin: 15px 0; box-sizing: border-box;
-        }
-
-        .policy { font-size: 0.8rem; line-height: 1.4; margin: 15px 0; color: #94a3b8; }
-        .policy span { color: var(--accent); text-decoration: underline; cursor: pointer; }
-
-        /* Чек для отрисовки */
-        #receipt-render {
-            position: absolute; left: -9999px;
-            width: 350px; background: white; color: black; padding: 25px;
-            font-family: 'Courier New', monospace;
-        }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .side-info { flex: 1.6; padding: 30px; display: none; }
+        .side-info.active { display: block; }
+        .pay-item { padding: 15px; border: 1px solid var(--accent); border-radius: 10px; color: var(--accent); text-align: center; font-weight: 600; cursor: pointer; margin-bottom: 10px; }
+        .copy-box { background: #0f172a; border: 2px dashed var(--accent); padding: 12px; text-align: center; border-radius: 10px; cursor: pointer; margin: 15px 0; font-weight: 800; color: var(--accent); }
+        .warning-box { background: rgba(239, 68, 68, 0.15); border-left: 4px solid #ef4444; padding: 15px; margin: 15px 0; font-size: 0.85rem; color: #fca5a5; }
+        
+        #receipt-render { position: absolute; left: -9999px; width: 350px; background: white; color: black; padding: 25px; font-family: 'Courier New', monospace; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
-    <h1>CRAFTX SERVER STORE</h1>
+    <nav>
+        <button class="nav-btn active" onclick="showPage('donate', this)">Донаты</button>
+        <button class="nav-btn" onclick="showPage('info', this)">Информация</button>
+        <button class="nav-btn" onclick="showPage('profile', this)">Личный кабинет</button>
+    </nav>
 
-    <div class="grid">
-        <div class="card"><h3>LEGEND</h3><span class="price">50 руб. / 100 coins</span><button class="buy-btn" onclick="openBuy('LEGEND', '50 рублей')">Купить</button></div>
-        <div class="card"><h3>VAPER</h3><span class="price">70 рублей</span><button class="buy-btn" onclick="openBuy('VAPER', '70 рублей')">Купить</button></div>
-        <div class="card"><h3>TOPER</h3><span class="price">150 рублей</span><button class="buy-btn" onclick="openBuy('TOPER', '150 рублей')">Купить</button></div>
-        <div class="card"><h3>MILLENIAL</h3><span class="price">200 рублей</span><button class="buy-btn" onclick="openBuy('MILLENIAL', '200 рублей')">Купить</button></div>
-        <div class="card"><h3>JUNIOR</h3><span class="price">250 рублей</span><button class="buy-btn" onclick="openBuy('JUNIOR', '250 рублей')">Купить</button></div>
-        <div class="card"><h3>HYDRA</h3><span class="price">500 рублей</span><button class="buy-btn" onclick="openBuy('HYDRA', '500 рублей')">Купить</button></div>
-    </div>
+    <!-- СЕКЦИЯ: ДОНАТЫ -->
+    <section id="donate" class="page-section active">
+        <h1>CRAFTX SERVER STORE</h1>
+        <div class="grid">
+            <div class="card"><h3>LEGEND</h3><span class="price">50 руб. / 100 coins</span><button class="buy-btn" onclick="openBuy('LEGEND', '50 рублей')">Купить</button></div>
+            <div class="card"><h3>VAPER</h3><span class="price">70 рублей</span><button class="buy-btn" onclick="openBuy('VAPER', '70 рублей')">Купить</button></div>
+            <div class="card"><h3>TOPER</h3><span class="price">150 рублей</span><button class="buy-btn" onclick="openBuy('TOPER', '150 рублей')">Купить</button></div>
+            <div class="card"><h3>MILLENIAL</h3><span class="price">200 рублей</span><button class="buy-btn" onclick="openBuy('MILLENIAL', '200 рублей')">Купить</button></div>
+            <div class="card"><h3>JUNIOR</h3><span class="price">250 рублей</span><button class="buy-btn" onclick="openBuy('JUNIOR', '250 рублей')">Купить</button></div>
+            <div class="card"><h3>HYDRA</h3><span class="price">500 рублей</span><button class="buy-btn" onclick="openBuy('HYDRA', '500 рублей')">Купить</button></div>
+        </div>
+    </section>
 
-    <!-- Модалка -->
+    <!-- СЕКЦИЯ: ИНФОРМАЦИЯ -->
+    <section id="info" class="page-section">
+        <h1>О ПРОЕКТЕ CRAFTX</h1>
+        <div class="info-container">
+            <h2>Добро пожаловать в будущее выживания!</h2>
+            <p><b>CraftX</b> — это технологичный Minecraft сервер нового поколения. Мы объединили стабильность ядра <b>Spigot</b> с безграничными возможностями <b>Fabric</b> аддонов, чтобы создать уникальный игровой опыт.</p>
+            
+            <p>Наш проект работает на версии <b>1.16.5</b> и поддерживает вход со всех актуальных версий игры вплоть до <b>апреля 2026 года</b>. Вам не нужно постоянно менять лаунчеры — мы всегда на связи!</p>
+            
+            <h3>Почему выбирают нас?</h3>
+            <ul>
+                <li><b>Технологии:</b> Использование Fabric-адонов позволяет нам внедрять уникальные механики, которые вы не встретите на обычных серверах.</li>
+                <li><b>Производительность:</b> Оптимизированный код обеспечивает высокий TPS даже при большом онлайне.</li>
+                <li><b>Слышим каждого:</b> Мы проводим еженедельные голосования в Discord и внедряем идеи, предложенные нашими игроками.</li>
+                <li><b>Постоянный прогресс:</b> Новые ивенты, боссы и самописные плагины обновляются ежемесячно.</li>
+            </ul>
+            
+            <p>Станьте частью истории CraftX уже сегодня. Наша миссия — создать комфортное комьюнити, где каждый найдет себе занятие по душе, будь то грандиозные постройки или захватывающее выживание.</p>
+            <p style="color:var(--accent); font-weight:800; text-align:center;">CRAFTX — Сделано игроками для игроков.</p>
+        </div>
+    </section>
+
+    <!-- СЕКЦИЯ: ЛИЧНЫЙ КАБИНЕТ -->
+    <section id="profile" class="page-section">
+        <h1>ЛИЧНЫЙ КАБИНЕТ</h1>
+        <div class="dev-box">
+            <h2 style="color:#64748b">РАЗДЕЛ В РАЗРАБОТКЕ</h2>
+            <p style="color:#475569">Совсем скоро здесь появится статистика игрока, управление скинами и история покупок.</p>
+            <div style="font-size: 3rem; margin-top: 20px;">⚙️</div>
+        </div>
+    </section>
+
+    <!-- Модальное окно покупки (остается неизменным по логике) -->
     <div class="modal-overlay" id="m-overlay">
         <div class="modal">
             <div class="side-pay">
                 <h3>Оплата</h3>
-                <div class="pay-item">СБП (QR-код)</div>
-                <div class="pay-bad">Стим (negative_dash)</div>
+                <div class="pay-item" onclick="switchStep('step-2')">СБП (QR-код)</div>
+                <div class="pay-item" onclick="switchStep('step-steam')">Steam</div>
                 <div class="pay-bad">Крипта (N/A)</div>
+                <button style="margin-top:20px; background:none; border:1px solid #444; color:#aaa; cursor:pointer; width:100%; padding:5px; border-radius:5px" onclick="closeModal()">Отмена</button>
             </div>
-            
-            <div class="side-info" id="step-1">
+            <div class="side-info active" id="step-1">
                 <h3>Оформление</h3>
                 <p>Товар: <b id="p-name"></b></p>
                 <p>Цена: <b id="p-price" style="color:var(--accent)"></b></p>
-                <input type="email" id="u-email" placeholder="название@почта">
-                <div class="policy">
-                    <input type="checkbox" id="u-agree"> 
-                    Я согласен с <span onclick="alert('Товар возврату не подлежит. Discord: albee_ldps')">политикой покупок</span>
-                </div>
-                <button class="buy-btn" onclick="goPay()">К оплате</button>
+                <input type="email" id="u-email" placeholder="Ваш Email">
+                <div class="policy"><input type="checkbox" id="u-agree"> Согласен с политикой</div>
+                <p><small>Выберите метод оплаты слева</small></p>
             </div>
-
-            <div class="side-info" id="step-2" style="display:none; text-align:center;">
+            <div class="side-info" id="step-2" style="text-align:center;">
                 <h3>Сканируйте QR</h3>
                 <img src="pay.png" width="180" style="background:white; padding:10px; border-radius:10px;" onerror="this.src='https://placeholder.com'">
-                <p><small>После оплаты нажмите кнопку ниже для получения чека</small></p>
-                <button class="buy-btn" onclick="finish()">Я ОПЛАТИЛ</button>
+                <button class="buy-btn" style="margin-top:15px" onclick="finish()">Я ОПЛАТИЛ</button>
+            </div>
+            <div class="side-info" id="step-steam">
+                <h3>Steam Оплата</h3>
+                <div class="copy-box" onclick="copyText('negative_dash')">negative_dash</div>
+                <p><small>Оплатите через <a href="https://ggsel.net/catalog/product/avtopopolnenie-balansa-steam-247-rub-kzt-uah-4352988" target="_blank" style="color:var(--accent)">партнера</a> и нажмите кнопку:</small></p>
+                <div class="warning-box">Сделайте скриншот чека!</div>
+                <button class="buy-btn" onclick="finishSteam()">Я ОПЛАТИЛ</button>
             </div>
         </div>
     </div>
 
-    <!-- Шаблон PNG чека -->
+    <!-- Чек -->
     <div id="receipt-render">
         <center><h2>CRAFTX PROJECT</h2><p>ЧЕК ОБ ОПЛАТЕ</p></center>
-        <hr>
-        <p><b>Товар:</b> <span id="r-item"></span></p>
-        <p><b>Сумма:</b> <span id="r-price"></span></p>
-        <p><b>Почта:</b> <span id="r-email"></span></p>
-        <p><b>Дата:</b> <span id="r-date"></span></p>
-        <p><b>ID:</b> <span id="r-id"></span></p>
-        <hr>
-        <center><p>Отправьте этот чек в Discord:<br><b>albee_ldps</b></p></center>
+        <hr><p>Товар: <span id="r-item"></span></p><p>Сумма: <span id="r-price"></span></p><p>Email: <span id="r-email"></span></p><p>ID: <span id="r-id"></span></p>
     </div>
 
     <script>
-        let selName = ""; let selPrice = "";
+        function showPage(pageId, btn) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            btn.classList.add('active');
+        }
 
+        let selName = ""; let selPrice = "";
         function openBuy(n, p) {
             selName = n; selPrice = p;
             document.getElementById('p-name').innerText = n;
@@ -177,43 +232,35 @@
             document.getElementById('m-overlay').style.display = 'flex';
         }
 
-        function goPay() {
+        function closeModal() { document.getElementById('m-overlay').style.display = 'none'; location.reload(); }
+
+        function switchStep(stepId) {
             const mail = document.getElementById('u-email').value;
             if(!mail.includes('@')) return alert('Введите почту!');
             if(!document.getElementById('u-agree').checked) return alert('Примите условия!');
-            document.getElementById('step-1').style.display = 'none';
-            document.getElementById('step-2').style.display = 'block';
+            document.querySelectorAll('.side-info').forEach(el => el.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+        }
+
+        function copyText(t) { navigator.clipboard.writeText(t); alert('Логин скопирован!'); }
+
+        function finishSteam() {
+            alert('Юху!\nПервый этап выполнен, напиши мне в Discord: albee_ldps\nПочта: craftx.minecraft@bk.ru');
+            location.reload();
         }
 
         async function finish() {
-            const ticket = 'ID-' + Math.floor(Math.random()*900+100) + '-' + Math.floor(Math.random()*900+100);
+            const ticket = 'ID-' + Math.floor(Math.random()*99999);
             const mail = document.getElementById('u-email').value;
-            const date = new Date().toLocaleString();
-
-            // Заполнение чека
             document.getElementById('r-item').innerText = selName;
             document.getElementById('r-price').innerText = selPrice;
             document.getElementById('r-email').innerText = mail;
-            document.getElementById('r-date').innerText = date;
             document.getElementById('r-id').innerText = ticket;
 
-            // 1. Скачиваем TXT
-            const txt = `CRAFTX PROJECT\nТовар: ${selName}\nЦена: ${selPrice}\nEmail: ${mail}\nДата: ${date}\nID: ${ticket}`;
-            const blob = new Blob([txt], {type: 'text/plain'});
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'check.txt'; a.click();
-
-            // 2. Скачиваем PNG
             const canvas = await html2canvas(document.getElementById('receipt-render'));
-            const p = document.createElement('a'); p.href = canvas.toDataURL(); p.download = 'check.png'; p.click();
+            const p = document.createElement('a'); p.href = canvas.toDataURL(); p.download = 'receipt.png'; p.click();
 
-            // 3. Стук в бота
-            fetch('http://localhost:5000/pay-notify', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ email: mail, item: selName, ticket: ticket })
-            }).catch(e => console.log("Бот спит"));
-
-            alert('Готово! Чеки сохранены. Отправьте их админу.');
+            alert('Готово! Чек сохранен. Отправь его админу albee_ldps');
             location.reload();
         }
     </script>
